@@ -1,0 +1,11 @@
+To run the full applicatiom, first split terminals:
+
+1. In one terminal, activate the virutal environment and go into the 'flask-server' directory.
+   Use the following commands to run the backend:
+
+     python main.py OR flask --app main run
+
+2. In the other terminal, go into the 'front-end' directory. Then use the following command to
+   start the frontend:
+
+     npm start
