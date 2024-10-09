@@ -9,6 +9,7 @@ app = Flask(__name__)
 
 @app.route("/welcome")
 def main():
+    # 'response' dictionary that gets returned to the front end
     response = {
         "name": "morning (flask end)",
         "hello": "Hello World (flask end)"
