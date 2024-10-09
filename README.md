@@ -1,6 +1,6 @@
 Ensure Flask ('pip install Flask' in venv and flask-server directory) and React are installed as well as:
 - axios (npm install axios) in 'front-end' directory.
-- python-dotenv (pip install python-dotenv) in venv in 'flask-server' directory.
+- python-dotenv (pip install python-dotenv) and requests (pip install requests) in venv in 'flask-server' directory.
 
 To run the full applicatiom, first split terminals:
 
