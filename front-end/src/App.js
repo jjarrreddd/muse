@@ -31,7 +31,8 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">
+      <header className="App-header" style={{ backgroundColor: 'black', color: 'white'}}>  // Background color change, green to black
+        <h1 style={{fontSize: '4rem'}}>Muse</h1>  // Muse text
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
