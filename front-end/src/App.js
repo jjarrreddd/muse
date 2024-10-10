@@ -31,21 +31,9 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header" style={{ backgroundColor: 'black', color: 'white'}}>  // Background color change, green to black
-        <h1 style={{fontSize: '4rem'}}>Muse</h1>  // Muse text
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-
-        {/* new line start*/}
+      <header className="App-header" style={{ backgroundColor: 'black', color: 'white'}}> 
+        <h1 style={{fontSize: '4rem'}}>Muse</h1>  
+{/*new line */}
         <p>To get your profile details: </p><button onClick={getData}>Click me</button>
         {profileData && <div>
               <p>Greeting (front end): {profileData.profile_name}</p>
