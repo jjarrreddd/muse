@@ -4,9 +4,10 @@
 from flask import Flask, redirect, request, session, url_for
 import requests
 import json
+import os
 
 app = Flask(__name__)
-app.secret_key = ''
+app.secret_key = os.urandom(24)
 
 # Spotify App Credentials
 REDIRECT_URI = 'https://localhost:3000/callback'
