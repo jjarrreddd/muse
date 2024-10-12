@@ -31,9 +31,10 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header" style={{ backgroundColor: 'black', color: 'white'}}> 
-        <h1 style={{fontSize: '4rem'}}>Muse</h1>  
-{/*new line */}
+      <header className="App-header" style={{ backgroundColor: 'black', color: 'white'}}>
+        <h1 style={{fontSize: '4rem'}}>Muse</h1> 
+        {/* deleted code goes here */}
+        {/* new line start*/}
         <p>To get your profile details: </p><button onClick={getData}>Click me</button>
         {profileData && <div>
               <p>Greeting (front end): {profileData.profile_name}</p>
