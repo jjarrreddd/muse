@@ -1,13 +1,17 @@
 # spotify authentication test file
-# pip install requests
+# pip install requests spotipy
 
-from flask import Flask, redirect, request, session, url_for
+from flask import Flask, session
 import requests
 import json
 import os
 
+from spotipy import Spotipy
+from spotipy.oauth2 import SpotifyOAuth
+from spotipy.cache_handler import FlaskSessionCacheHandler
+
 app = Flask(__name__)
-app.secret_key = os.urandom(24)
+app.config['SECRET_KEY'] = os.urandom(24)
 
 # Spotify App Credentials
 REDIRECT_URI = 'https://localhost:3000/callback'
@@ -20,6 +24,16 @@ API_BASE_URL = 'https://api.spotify.com/v1/'
 AUTH_URL = 'https://accounts.spotify.com/authorize/?'
 TOKEN_URL = 'https://accounts.spotify.com/api/token'
 
+CACHE_HANDLER = FlaskSessionCacheHandler(session)
+sp_oauth = SpotifyOAuth(
+    REDIRECT_URI = REDIRECT_URI,
+    SCOPE = SCOPE,
+    CLIENT_ID = CLIENT_ID,
+    CLIENT_SECRET = CLIENT_SECRET,
+    CACHE_HANDLER = CACHE_HANDLER,
+    show_dialog = True
+)
+
 @app.route('/login')
 def login():
     # Redirect to Spotify for authentication
@@ -29,7 +43,7 @@ def login():
 @app.route('/callback')
 def callback():
     # Handle callback after authentication
-    auth_code = request.args['code']
+    auth_code = request.args.get('code')
     auth_token = get_token(auth_code)
     session['auth_token'] = auth_token
     return redirect(url_for('profile'))
