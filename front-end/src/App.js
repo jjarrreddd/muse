@@ -35,7 +35,7 @@ function App() {
         <h1 style={{fontSize: '4rem'}}>Muse</h1> 
         {/* deleted code goes here */}
         {/* new line start*/}
-        <p>To get your profile details: </p><button onClick={getData}>Click me</button>
+        <button onClick={getData}>Log into Spotify</button>
         {profileData && <div>
               <p>Greeting (front end): {profileData.profile_name}</p>
               <p>About me (front end): {profileData.profile_hello}</p>
