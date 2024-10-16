@@ -1,47 +1,62 @@
-// In order to launch full web app, split terminal and run FLASK
-// in one terminal and REACT in the other terminal.
-// To run: npm start, while in 'front-end' directory
-
-import { useState } from 'react'
-import axios from "axios"
-import './App.css'
+import { useState } from 'react';
+import axios from "axios";
+import './App.css';
 
 function App() {
-
-  const [profileData, setProfileData] = useState(null) // contol the state of 'profileData'
+  const [songInput, setSongInput] = useState(''); // State for the song input
+  const [recommendations, setRecommendations] = useState([]); // State for song recommendations
 
   function getData() {
     axios({
       method: "GET",
-      url:"/welcome",
+      url: "/login", // Start the OAuth flow
     })
     .then((response) => {
-      const res =response.data
-      setProfileData(({
-        profile_name: res.name,
-        profile_hello: res.hello}))
+      // Optionally handle response if needed
+      console.log("Logged in to Spotify");
     }).catch((error) => {
-      if (error.response) {
-        console.log(error.response)
-        console.log(error.response.status)
-        console.log(error.response.headers)
-        }
-    })}
-    //end of new line 
+      console.log("Error during login", error);
+    });
+  }
+
+  function getRecommendations() {
+    axios({
+      method: "POST",
+      url: "/recommendations", // Create a new endpoint to handle recommendations
+      data: { song: songInput },
+    })
+    .then((response) => {
+      setRecommendations(response.data); // Assuming response contains recommendation data
+    }).catch((error) => {
+      console.log("Error fetching recommendations", error);
+    });
+  }
 
   return (
     <div className="App">
       <header className="App-header" style={{ backgroundColor: 'black', color: 'white'}}>
-        <h1 style={{fontSize: '4rem'}}>Muse</h1> 
-        {/* deleted code goes here */}
-        {/* new line start*/}
+        <h1 style={{fontSize: '4rem'}}>Muse</h1>
+        
         <button onClick={getData}>Log into Spotify</button>
-        {profileData && <div>
-              <p>Greeting (front end): {profileData.profile_name}</p>
-              <p>About me (front end): {profileData.profile_hello}</p>
-            </div>
-        }
-         {/* end of new line */}
+        
+        <input 
+          type="text" 
+          placeholder="Enter a song" 
+          value={songInput} 
+          onChange={(e) => setSongInput(e.target.value)} 
+        />
+        <button onClick={getRecommendations}>Get Recommendations</button>
+
+        {recommendations.length > 0 && (
+          <div>
+            <h2>Recommendations:</h2>
+            <ul>
+              {recommendations.map((song, index) => (
+                <li key={index}>{song.name}</li> // Adjust based on response structure
+              ))}
+            </ul>
+          </div>
+        )}
       </header>
     </div>
   );
