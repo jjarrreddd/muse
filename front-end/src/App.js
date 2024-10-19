@@ -7,16 +7,7 @@ function App() {
   const [recommendations, setRecommendations] = useState([]); // State for song recommendations
 
   function getData() {
-    axios({
-      method: "GET",
-      url: "/login", // Start the OAuth flow
-    })
-    .then((response) => {
-      // Optionally handle response if needed
-      console.log("Logged in to Spotify");
-    }).catch((error) => {
-      console.log("Error during login", error);
-    });
+    window.location.href = "http://localhost:5000/login";
   }
 
   function getRecommendations() {
