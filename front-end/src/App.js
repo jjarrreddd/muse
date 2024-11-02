@@ -1,64 +1,53 @@
-// In order to launch full web app, split terminal and run FLASK
-// in one terminal and REACT in the other terminal.
-// To run: npm start, while in 'front-end' directory
-
-import { useState } from 'react'
-import axios from "axios"
-import './App.css'
+import { useState } from 'react';
+import axios from "axios";
+import './App.css';
 
 function App() {
-
-  const [profileData, setProfileData] = useState(null) // contol the state of 'profileData'
+  const [songInput, setSongInput] = useState(''); // State for the song input
+  const [recommendations, setRecommendations] = useState([]); // State for song recommendations
 
   function getData() {
+    window.location.href = "http://localhost:5000/login";
+  }
+
+  function getRecommendations() {
     axios({
-      method: 'GET',
-      url: '/welcome',
+      method: "POST",
+      url: "/recommendations", // Create a new endpoint to handle recommendations
+      data: { song: songInput },
     })
     .then((response) => {
-      const res =response.data
-      setProfileData(({
-        profile_name: res.name,
-        profile_hello: res.hello}))
+      setRecommendations(response.data); // Assuming response contains recommendation data
     }).catch((error) => {
-      if (error.response) {
-        console.log(error.response)
-        console.log(error.response.status)
-        console.log(error.response.headers)
-        }
-    })}
-
-    function handleSpotifyLogin() {
-      axios({
-        method: 'GET',
-        url: '/login',
-      })
-    }
-    //end of new line 
+      console.log("Error fetching recommendations", error);
+    });
+  }
 
   return (
     <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+      <header className="App-header" style={{ backgroundColor: 'black', color: 'white'}}>
+        <h1 style={{fontSize: '4rem'}}>Muse</h1>
+        
+        <button onClick={getData}>Log into Spotify</button>
+        
+        <input 
+          type="text" 
+          placeholder="Enter a song" 
+          value={songInput} 
+          onChange={(e) => setSongInput(e.target.value)} 
+        />
+        <button onClick={getRecommendations}>Get Recommendations</button>
 
-        {/* new line start*/}
-        <p>To get your profile details: </p><button onClick={handleSpotifyLogin}>Log into Spotify</button>
-        {/* {profileData && <div>
-              <p>Greeting (front end): {profileData.profile_name}</p>
-              <p>About me (front end): {profileData.profile_hello}</p>
-            </div>
-        } */}
-         {/* end of new line */}
+        {recommendations.length > 0 && (
+          <div>
+            <h2>Recommendations:</h2>
+            <ul>
+              {recommendations.map((song, index) => (
+                <li key={index}>{song.name}</li> // Adjust based on response structure
+              ))}
+            </ul>
+          </div>
+        )}
       </header>
     </div>
   );
