@@ -12,8 +12,8 @@ function App() {
 
   function getData() {
     axios({
-      method: "GET",
-      url:"/welcome",
+      method: 'GET',
+      url: '/welcome',
     })
     .then((response) => {
       const res =response.data
@@ -27,6 +27,13 @@ function App() {
         console.log(error.response.headers)
         }
     })}
+
+    function handleSpotifyLogin() {
+      axios({
+        method: 'GET',
+        url: '/login',
+      })
+    }
     //end of new line 
 
   return (
@@ -45,12 +52,12 @@ function App() {
         </a>
 
         {/* new line start*/}
-        <p>To get your profile details: </p><button onClick={getData}>Click me</button>
-        {profileData && <div>
+        <p>To get your profile details: </p><button onClick={handleSpotifyLogin}>Log into Spotify</button>
+        {/* {profileData && <div>
               <p>Greeting (front end): {profileData.profile_name}</p>
               <p>About me (front end): {profileData.profile_hello}</p>
             </div>
-        }
+        } */}
          {/* end of new line */}
       </header>
     </div>
