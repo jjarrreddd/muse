@@ -1,4 +1,4 @@
-from flask import Flask, redirect, request, session, url_for
+from flask import Flask, redirect, request, session, url_for, send_from_directory
 import requests
 import os
 
@@ -37,11 +37,12 @@ def callback():
     # Store the access token in the session
     session['access_token'] = access_token
 
-    return redirect(url_for('welcome'))
+    return redirect('http://localhost:3000/welcome')
 
+##########
 @app.route("/welcome")
 def welcome():
-    # Check if user is logged in
+    # Check if user is logged in, after login, user is redirected back to page
     if 'access_token' not in session:
         return redirect(url_for('login'))
 
