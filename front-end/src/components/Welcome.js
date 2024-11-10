@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import LogoutButton from './LogoutButton';
 
 const Welcome = () => {
     const [data, setData] = useState(null);
@@ -24,6 +25,7 @@ const Welcome = () => {
     return (
         <div>
             <h1>Login Successful! Welcome to Muse!</h1>
+            <LogoutButton />
         </div>
     );
 };

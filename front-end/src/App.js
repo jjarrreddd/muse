@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-// import axios from "axios";
 import './App.css';
 import LoginPage from './components/Login'
 import Welcome from './components/Welcome';

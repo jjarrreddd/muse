@@ -1,10 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 import './style.css';
-import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
-    const navigate = useNavigate();
-
     function getData() {
         window.location.href = "http://localhost:5000/login";
     }
@@ -14,7 +12,7 @@ const LoginPage = () => {
             <header className="App-header" style={{ backgroundColor: 'black', color: 'white' }}>
                 <h1 style={{ fontSize: '4rem' }}>Muse</h1>
 
-                <button onClick={getData}>Log into Spotify</button>
+                <button onClick={getData}>Log in with Spotify</button>
             </header>
         </div>
     );

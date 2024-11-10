@@ -12,34 +12,60 @@ REDIRECT_URI = 'http://localhost:5000/callback'  # Update this if needed
 
 @app.route("/login")
 def login():
-    # Redirect user to Spotify's authorization page
-    auth_url = f"https://accounts.spotify.com/authorize?response_type=code&client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&scope=user-read-private user-read-email"
-    return redirect(auth_url)
+    try:
+        # Redirect user to Spotify's authorization page
+        auth_url = f"https://accounts.spotify.com/authorize?response_type=code&client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&scope=user-read-private user-read-email"
+        return redirect(auth_url)
+    except:
+        return {"error": "An error has occurred."}, 500
 
 @app.route("/callback")
 def callback():
     # Get the authorization code from the request
     code = request.args.get('code')
+    error = request.args.get('error')
+
+    if error:
+        return {"error": "An error has occurred. Please try again."}
     
-    # Exchange the authorization code for an access token
-    token_url = 'https://accounts.spotify.com/api/token'
-    response = requests.post(token_url, {
-        'grant_type': 'authorization_code',
-        'code': code,
-        'redirect_uri': REDIRECT_URI,
-        'client_id': CLIENT_ID,
-        'client_secret': CLIENT_SECRET,
-    })
-
-    token_data = response.json()
-    access_token = token_data.get('access_token')
+    if not code:
+        return {"error": "Authorization code not provided."}, 400
     
-    # Store the access token in the session
-    session['access_token'] = access_token
+    try:
+        # Exchange the authorization code for an access token
+        token_url = 'https://accounts.spotify.com/api/token'
+        response = requests.post(token_url, {
+            'grant_type': 'authorization_code',
+            'code': code,
+            'redirect_uri': REDIRECT_URI,
+            'client_id': CLIENT_ID,
+            'client_secret': CLIENT_SECRET,
+        })
 
-    return redirect('http://localhost:3000/welcome')
+        token_data = response.json()
+        access_token = token_data.get('access_token')
+        refresh_token = token_data.get('refresh_token')
+        
+        # Store the access and refresh token in the session
+        session['access_token'] = access_token
+        session['refresh_token'] = refresh_token
 
-##########
+        return redirect('http://localhost:3000/welcome')
+    
+    except requests.exceptions.RequestException:
+        return {"error": "A possible network error has occurred. Please try again."}
+    except Exception as e:
+        return {"error": "Failed to log in."}, 500
+
+
+@app.route("/logout", methods=["POST"])
+def logout():
+    # Remove the access and refresh token from the session
+    session.pop('access_token', None)
+    session.pop('refresh_token', None)
+    return {"message": "Log out successful!"}, 200
+
+########## actual function
 @app.route("/welcome")
 def welcome():
     # Check if user is logged in, after login, user is redirected back to page
