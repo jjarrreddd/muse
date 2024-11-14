@@ -26,6 +26,7 @@ const Welcome = () => {
         <div>
             <h1>Login Successful! Welcome to Muse!</h1>
             <LogoutButton />
+            <h2>*ensure everything is centered, allow for users to input songs (parse their urls), and produce the recommendation*</h2>
         </div>
     );
 };
