@@ -1,34 +1,49 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
 import axios from 'axios';
-import LogoutButton from './LogoutButton';
 
 const Welcome = () => {
-    const [data, setData] = useState(null);
-    const navigate = useNavigate();
+  const [songName, setSongName] = useState('');  // State to store the song name input
+  const [songInfo, setSongInfo] = useState(null); // State to store the fetched song data
+  const [error, setError] = useState(''); // State to store error message
 
-    // const handleSuccess = async () => {
-    //     navigate('/welcome');
-    // };
+  // Function to handle the song search and send POST request to Flask back-end
+  const handleSearchSong = () => {
+    axios.post('http://localhost:5000/search-song', { song_name: songName })
+      .then((response) => {
+        setSongInfo(response.data);  // Store the song info from the response
+        setError('');  // Clear any previous errors
+      })
+      .catch((err) => {
+        setError(err.response ? err.response.data.error : 'An unknown error occurred');
+      });
+  };
 
-    // useEffect(() => {
-    //     // handleSuccess();
-    //     axios.get('http://localhost:5000/welcome')
-    //         .then(response => {
-    //             setData(response.data.name);
-    //         })
-    //         .catch(error => {
-    //             console.error(error);
-    //         });
-    // }, []);
+  return (
+    <div>
+      <h1>Search for a Song</h1>
+      <input 
+        type="text" 
+        value={songName} 
+        onChange={(e) => setSongName(e.target.value)} 
+        placeholder="Enter song name"
+      />
+      <button onClick={handleSearchSong}>Search</button>
 
-    return (
+      {/* Display song information if available */}
+      {songInfo && (
         <div>
-            <h1>Login Successful! Welcome to Muse!</h1>
-            <LogoutButton />
-            <h2>*ensure everything is centered, allow for users to input songs (parse their urls), and produce the recommendation*</h2>
+          <h2>Song Info:</h2>
+          <p>Name: {songInfo.name}</p>
+          <p>Artist: {songInfo.artist}</p>
+          <p>Album: {songInfo.album}</p>
+          <p>URI: {songInfo.uri}</p>
         </div>
-    );
+      )}
+
+      {/* Display error message if there is one */}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+    </div>
+  );
 };
 
 export default Welcome;
