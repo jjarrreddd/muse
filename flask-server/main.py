@@ -6,6 +6,8 @@ from spotipy import Spotify
 from spotipy.oauth2 import SpotifyOAuth
 from spotipy.cache_handler import FlaskSessionCacheHandler
 
+#####################################################
+#Lines 33 - 35 into method, used in almost all paths
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(64)   #generating on the fly, ideally a fixed string stored in environment variable
