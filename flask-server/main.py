@@ -45,9 +45,9 @@ def welcome():
         return redirect(auth_url)
     
     if request.method == 'POST':
-        # Handle the search query
         query = request.form.get('song_query')
         results = sp.search(q=query, type='track', limit=1)
+        
         if results['tracks']['items']:
             track = results['tracks']['items'][0]
             track_info = {
@@ -58,8 +58,8 @@ def welcome():
                 'id': track['id']
             }
 
-            # Fetch audio features using the track ID
-            audio_features = sp.audio_features(track_info['id'])[0]  # Get the first result
+            # Fetch audio features for the track
+            audio_features = sp.audio_features(track_info['id'])[0]
             if audio_features:
                 track_info.update({
                     'danceability': audio_features['danceability'],
@@ -68,28 +68,55 @@ def welcome():
                     'valence': audio_features['valence']
                 })
 
-            return render_template_string('''
-                <h1>Search Results</h1>
-                <p><strong>Song:</strong> {{ track_info['name'] }}</p>
-                <p><strong>Artist:</strong> {{ track_info['artist'] }}</p>
-                <p><strong>Album:</strong> {{ track_info['album'] }}</p>
-                <p><a href="{{ track_info['url'] }}" target="_blank">Listen on Spotify</a></p>
-                <h2>Audio Features:</h2>
-                <ul>
-                    <li><strong>Danceability:</strong> {{ track_info['danceability'] }}</li>
-                    <li><strong>Energy:</strong> {{ track_info['energy'] }}</li>
-                    <li><strong>Tempo:</strong> {{ track_info['tempo'] }} BPM</li>
-                    <li><strong>Valence:</strong> {{ track_info['valence'] }}</li>
-                </ul>
-                <a href="/welcome">Search Again</a>
-            ''', track_info=track_info)
+                # Get song recommendations based on these features
+                recommendations = sp.recommendations(
+                    seed_tracks=[track_info['id']],
+                    limit=5,
+                    target_danceability=audio_features['danceability'],
+                    target_energy=audio_features['energy'],
+                    target_tempo=audio_features['tempo'],
+                    target_valence=audio_features['valence']
+                )
+
+                recommendations_list = [
+                    {
+                        'name': rec['name'],
+                        'artist': rec['artists'][0]['name'],
+                        'url': rec['external_urls']['spotify']
+                    }
+                    for rec in recommendations['tracks']
+                ]
+
+                return render_template_string('''
+                    <h1>Search Results</h1>
+                    <p><strong>Song:</strong> {{ track_info['name'] }}</p>
+                    <p><strong>Artist:</strong> {{ track_info['artist'] }}</p>
+                    <p><strong>Album:</strong> {{ track_info['album'] }}</p>
+                    <p><a href="{{ track_info['url'] }}" target="_blank">Listen on Spotify</a></p>
+                    <h2>Audio Features:</h2>
+                    <ul>
+                        <li><strong>Danceability:</strong> {{ track_info['danceability'] }}</li>
+                        <li><strong>Energy:</strong> {{ track_info['energy'] }}</li>
+                        <li><strong>Tempo:</strong> {{ track_info['tempo'] }} BPM</li>
+                        <li><strong>Valence:</strong> {{ track_info['valence'] }}</li>
+                    </ul>
+                    <h2>Recommended Songs:</h2>
+                    <ul>
+                        {% for rec in recommendations_list %}
+                            <li>
+                                <strong>{{ rec['name'] }}</strong> by {{ rec['artist'] }} -
+                                <a href="{{ rec['url'] }}" target="_blank">Listen on Spotify</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <a href="/welcome">Search Again</a>
+                ''', track_info=track_info, recommendations_list=recommendations_list)
         else:
             return render_template_string('''
                 <h1>No results found for your query.</h1>
                 <a href="/welcome">Search Again</a>
             ''')
 
-    # Display the search bar
     return render_template_string('''
         <h1>Welcome to Spotify Song Finder</h1>
         <form method="POST">
@@ -97,6 +124,7 @@ def welcome():
             <button type="submit">Search</button>
         </form>
     ''')
+
 
 
 @app.route('/get_playlists')
@@ -115,6 +143,9 @@ def get_playlists():
 def logout():
     session.clear()
     return redirect(url_for('home'))
+
+############ADD /Welcome
+
 
 if __name__ == '__main__':
     app.run(debug=True)
