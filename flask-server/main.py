@@ -6,8 +6,6 @@ from spotipy import Spotify
 from spotipy.oauth2 import SpotifyOAuth
 from spotipy.cache_handler import FlaskSessionCacheHandler
 
-#####################################################
-#Lines 33 - 35 into method, used in almost all paths
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(64)   #generating on the fly, ideally a fixed string stored in environment variable
@@ -47,9 +45,15 @@ def welcome():
         return redirect(auth_url)
     
     if request.method == 'POST':
+        # Get values from form
         query = request.form.get('song_query')
+        target_danceability = float(request.form.get('danceability', 0.5))
+        target_energy = float(request.form.get('energy', 0.5))
+        target_tempo = float(request.form.get('tempo', 120))
+        target_valence = float(request.form.get('valence', 0.5))
+
+        # Search for a song
         results = sp.search(q=query, type='track', limit=1)
-        
         if results['tracks']['items']:
             track = results['tracks']['items'][0]
             track_info = {
@@ -60,72 +64,61 @@ def welcome():
                 'id': track['id']
             }
 
-            # Fetch audio features for the track
-            audio_features = sp.audio_features(track_info['id'])[0]
-            if audio_features:
-                track_info.update({
-                    'danceability': audio_features['danceability'],
-                    'energy': audio_features['energy'],
-                    'tempo': audio_features['tempo'],
-                    'valence': audio_features['valence']
-                })
+            # Get recommendations based on input attributes
+            recommendations = sp.recommendations(
+                seed_tracks=[track_info['id']],
+                limit=5,
+                target_danceability=target_danceability,
+                target_energy=target_energy,
+                target_tempo=target_tempo,
+                target_valence=target_valence
+            )
 
-                # Get song recommendations based on these features
-                recommendations = sp.recommendations(
-                    seed_tracks=[track_info['id']],
-                    limit=5,
-                    target_danceability=audio_features['danceability'],
-                    target_energy=audio_features['energy'],
-                    target_tempo=audio_features['tempo'],
-                    target_valence=audio_features['valence']
-                )
+            recommendations_list = [
+                {
+                    'name': rec['name'],
+                    'artist': rec['artists'][0]['name'],
+                    'url': rec['external_urls']['spotify']
+                }
+                for rec in recommendations['tracks']
+            ]
 
-                recommendations_list = [
-                    {
-                        'name': rec['name'],
-                        'artist': rec['artists'][0]['name'],
-                        'url': rec['external_urls']['spotify']
-                    }
-                    for rec in recommendations['tracks']
-                ]
-
-                return render_template_string('''
-                    <h1>Search Results</h1>
-                    <p><strong>Song:</strong> {{ track_info['name'] }}</p>
-                    <p><strong>Artist:</strong> {{ track_info['artist'] }}</p>
-                    <p><strong>Album:</strong> {{ track_info['album'] }}</p>
-                    <p><a href="{{ track_info['url'] }}" target="_blank">Listen on Spotify</a></p>
-                    <h2>Audio Features:</h2>
-                    <ul>
-                        <li><strong>Danceability:</strong> {{ track_info['danceability'] }}</li>
-                        <li><strong>Energy:</strong> {{ track_info['energy'] }}</li>
-                        <li><strong>Tempo:</strong> {{ track_info['tempo'] }} BPM</li>
-                        <li><strong>Valence:</strong> {{ track_info['valence'] }}</li>
-                    </ul>
-                    <h2>Recommended Songs:</h2>
-                    <ul>
-                        {% for rec in recommendations_list %}
-                            <li>
-                                <strong>{{ rec['name'] }}</strong> by {{ rec['artist'] }} -
-                                <a href="{{ rec['url'] }}" target="_blank">Listen on Spotify</a>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                    <a href="/welcome">Search Again</a>
-                ''', track_info=track_info, recommendations_list=recommendations_list)
-        else:
             return render_template_string('''
-                <h1>No results found for your query.</h1>
+                <h1>Search Results</h1>
+                <p><strong>Song:</strong> {{ track_info['name'] }}</p>
+                <p><strong>Artist:</strong> {{ track_info['artist'] }}</p>
+                <p><strong>Album:</strong> {{ track_info['album'] }}</p>
+                <p><a href="{{ track_info['url'] }}" target="_blank">Listen on Spotify</a></p>
+                <h2>Recommended Songs:</h2>
+                <ul>
+                    {% for rec in recommendations_list %}
+                        <li>
+                            <strong>{{ rec['name'] }}</strong> by {{ rec['artist'] }} -
+                            <a href="{{ rec['url'] }}" target="_blank">Listen on Spotify</a>
+                        </li>
+                    {% endfor %}
+                </ul>
                 <a href="/welcome">Search Again</a>
-            ''')
+            ''', track_info=track_info, recommendations_list=recommendations_list)
+        else:
+            return render_template_string('<h1>No results found for your query.</h1><a href="/welcome">Search Again</a>')
 
     return render_template_string('''
         <h1>Welcome to Spotify Song Finder</h1>
         <form method="POST">
             <input type="text" name="song_query" placeholder="Search for a song..." required>
+            <label for="danceability">Danceability (0.0 - 1.0):</label>
+            <input type="range" name="danceability" min="0.0" max="1.0" step="0.1" value="0.5">
+            <label for="energy">Energy (0.0 - 1.0):</label>
+            <input type="range" name="energy" min="0.0" max="1.0" step="0.1" value="0.5">
+            <label for="tempo">Tempo (BPM):</label>
+            <input type="range" name="tempo" min="60" max="200" step="1" value="120">
+            <label for="valence">Valence (0.0 - 1.0):</label>
+            <input type="range" name="valence" min="0.0" max="1.0" step="0.1" value="0.5">
             <button type="submit">Search</button>
         </form>
     ''')
+
 
 
 
