@@ -1,67 +1,28 @@
-// npm install react-router-dom -S
-
-import { useState } from 'react';
+import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import LoginPage from './components/Login'
+import LoginPage from './components/Login';
 import Welcome from './components/Welcome';
+import NavBar from './components/navbar'; 
+import About from './components/About';
+import Home from './components/Home';
+import Contact from './components/contact';
+import MusicPlayer from './components/MusicPlayer';
 
 function App() {
-  // const [songInput, setSongInput] = useState(''); // State for the song input
-  // const [recommendations, setRecommendations] = useState([]); // State for song recommendations
-
-  // function getData() {
-  //   window.location.href = "http://localhost:5000/login";
-  // }
-
-  // function getRecommendations() {
-  //   axios({
-  //     method: "POST",
-  //     url: "/recommendations", // Create a new endpoint to handle recommendations
-  //     data: { song: songInput },
-  //   })
-  //   .then((response) => {
-  //     setRecommendations(response.data); // Assuming response contains recommendation data
-  //   }).catch((error) => {
-  //     console.log("Error fetching recommendations", error);
-  //   });
-  // }
-
   return (
-    <>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<LoginPage />} />
-          <Route path="/welcome" element={<Welcome />} />
-        </Routes>
-      </BrowserRouter>
-    </>
-    // <div className="App">
-    //   <header className="App-header" style={{ backgroundColor: 'black', color: 'white'}}>
-    //     <h1 style={{fontSize: '4rem'}}>Muse</h1>
-        
-    //     <button onClick={getData}>Log into Spotify</button>
-        
-    //     <input 
-    //       type="text" 
-    //       placeholder="Enter a song" 
-    //       value={songInput} 
-    //       onChange={(e) => setSongInput(e.target.value)} 
-    //     />
-    //     <button onClick={getRecommendations}>Get Recommendations</button>
-
-    //     {recommendations.length > 0 && (
-    //       <div>
-    //         <h2>Recommendations:</h2>
-    //         <ul>
-    //           {recommendations.map((song, index) => (
-    //             <li key={index}>{song.name}</li> // Adjust based on response structure
-    //           ))}
-    //         </ul>
-    //       </div>
-    //     )}
-    //   </header>
-    // </div>
+    <BrowserRouter>
+      <NavBar />
+      <Routes>
+        <Route path="/home" element={<Home />} />
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/welcome" element={<Welcome />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} /> {/* New Contact route */}
+        <Route path="/music-player" element={<MusicPlayer />} /> {/* New Music Player */}
+      </Routes>
+    </BrowserRouter>
   );
 }
 
