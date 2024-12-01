@@ -8,7 +8,7 @@ const LogoutButton = () => {
 
     const handleLogout = async () => {
         try {
-            const response = await axios.post('http://localhost:3000/logout', {}, { withCredentials: true });
+            const response = await axios.get('http://localhost:3000/logout', {}, { withCredentials: true });
             if (response.status === 200) {
                 setErrorMessage(null);
                 navigate('/');
