@@ -4,7 +4,7 @@ import './style.css';
 
 const LoginPage = () => {
     function getData() {
-        window.location.href = "http://localhost:5000/login";
+        window.location.href = "http://localhost:5000/";
     }
 
     return (
