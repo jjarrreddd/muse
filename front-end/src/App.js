@@ -1,4 +1,5 @@
 import React from 'react';
+<<<<<<< Updated upstream
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
@@ -24,6 +25,21 @@ function App() {
       </Routes>
     </BrowserRouter>
   );
+=======
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Auth from './components/Auth';
+import ProtectedComponent from './ProtectedComponent'; // Ensure the path matches
+
+function App() {
+    return (
+        <Router>
+            <Routes>
+                <Route path="/" element={<Auth />} />
+                <Route path="/protected" element={<ProtectedComponent />} />
+            </Routes>
+        </Router>
+    );
+>>>>>>> Stashed changes
 }
 
 export default App;
