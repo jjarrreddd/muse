@@ -17,8 +17,8 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(64)   # generating on the fly, ideally a fixed string stored in environment variable
 CORS(app, resources={r'/*': {'origins': 'http://localhost:3000'}})
 
-client_id = os.getenv('SPOTIFY_CLIENT_ID')
-client_secret = os.getenv('SPOTIFY_CLIENT_SECRET')
+client_id = os.getenv('CLIENT_ID')
+client_secret = os.getenv('CLIENT_SECRET')
 if not client_id or not client_secret:
     raise ValueError("Spotify Client ID and Secret must be set in environment variables.")
 redirect_uri = 'http://localhost:5000/callback'
@@ -120,7 +120,10 @@ def search():
         target_danceability = data.get('danceability', 0.5),
         target_energy = data.get('energy', 0.5),
         target_tempo = data.get('tempo', 120),
-        target_valence = data.get('valence', 0.5)
+        target_valence = data.get('valence', 0.5),
+        target_acousticness = data.get('acousticness', 0.5),
+        target_instrumentalness = data.get('instrumentalness', 0.5),
+        target_loudness = data.get('loudness', 30.0),
     )
 
     # Compiles recommendations and grabs data about each

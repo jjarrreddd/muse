@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import axios from 'axios';
 import './style.css'
 
@@ -18,37 +19,42 @@ function MusicPlayer() {
   };
 
   return (
-    <div className="container mt-5">
-      <h2>Test Play Music</h2>
-      <div className="mb-3">
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Enter Spotify Track ID"
-          value={trackId}
-          onChange={(e) => setTrackId(e.target.value)}
-          required
-        />
-      </div>
-      <button onClick={fetchTrack}>
-        Fetch Track
-      </button>
-
-      {trackData && (
-        <div className="mt-4">
-          <h4>{trackData.name}</h4>
-          <p>{trackData.artist}</p>
-          {trackData.preview_url ? (
-            <audio controls>
-              <source src={trackData.preview_url} type="audio/mpeg" />
-              Your browser does not support the audio element.
-            </audio>
-          ) : (
-            <p>Preview not available for this track.</p>
-          )}
+    <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1 }}>
+      <div className="container mt-5">
+        <h2>Test Play Music</h2>
+        <div className="mb-3">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Enter Spotify Track ID"
+            value={trackId}
+            onChange={(e) => setTrackId(e.target.value)}
+            required
+          />
         </div>
-      )}
-    </div>
+        <button onClick={fetchTrack}>
+          Fetch Track
+        </button>
+
+        {trackData && (
+          <div className="mt-4">
+            <h4>{trackData.name}</h4>
+            <p>{trackData.artist}</p>
+            {trackData.preview_url ? (
+              <audio controls>
+                <source src={trackData.preview_url} type="audio/mpeg" />
+                Your browser does not support the audio element.
+              </audio>
+            ) : (
+              <p>Preview not available for this track.</p>
+            )}
+          </div>
+        )}
+      </div>
+    </motion.div>
   );
 }
 
