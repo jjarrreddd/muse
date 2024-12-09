@@ -17,8 +17,10 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(64)   # generating on the fly, ideally a fixed string stored in environment variable
 CORS(app, resources={r'/*': {'origins': 'http://localhost:3000'}})
 
-client_id = os.getenv('CLIENT_ID')
-client_secret = os.getenv('CLIENT_SECRET')
+client_id = os.getenv('SPOTIFY_CLIENT_ID')
+client_secret = os.getenv('SPOTIFY_CLIENT_SECRET')
+if not client_id or not client_secret:
+    raise ValueError("Spotify Client ID and Secret must be set in environment variables.")
 redirect_uri = 'http://localhost:5000/callback'
 scope = 'playlist-read-private' # gets us a users private playlists, to add 'playlist-read-private, streaming, etc'
 
