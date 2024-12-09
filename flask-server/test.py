@@ -1,12 +1,11 @@
 import os
 from dotenv import load_dotenv
+import sys
 
-from flask import Flask, session, request, redirect, url_for, jsonify
+from flask import Flask, session, request, redirect, jsonify
 from flask_cors import CORS, cross_origin
 from urllib.parse import urlencode
 import requests
-
-import sys
 
 from spotipy import Spotify
 from spotipy.oauth2 import SpotifyOAuth
@@ -15,7 +14,7 @@ from spotipy.cache_handler import FlaskSessionCacheHandler
 load_dotenv()
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.urandom(64)   #generating on the fly, ideally a fixed string stored in environment variable
+app.config['SECRET_KEY'] = os.urandom(64)   # generating on the fly, ideally a fixed string stored in environment variable
 CORS(app, resources={r'/*': {'origins': 'http://localhost:3000'}})
 
 client_id = os.getenv('CLIENT_ID')
