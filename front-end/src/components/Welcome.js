@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import LogoutButton from './LogoutButton';
+import './style.css';
 import axios from 'axios';
 
 function Welcome() {
@@ -13,7 +14,13 @@ function Welcome() {
     const [error, setError] = useState(null);
     const [query, setQuery] = useState('');
     const [loading, setLoading] = useState(false);
+    const [visible, setVisible] = useState(false);
 
+    useEffect(() => {
+      setTimeout(() => {
+        setVisible(true);
+      }, 500);
+    }, []);
 
     const handleSubmit = async (e) => {
       e.preventDefault();
@@ -35,39 +42,47 @@ function Welcome() {
     };
 
     return (
-        <div>
+        <div className="welcome-container">
             <div>
             <LogoutButton />
+            <br />
             </div>
         <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search for a song..."
-            required
-          />
-          <label> Danceability (0.0 - 1.0): </label>
-          <input type="range" min="0.0" max="1.0" step="0.1" value={danceability} onChange={(e) => setDanceability(e.target.value)} />
-  
-          <label> Energy (0.0 - 1.0): </label>
-          <input type="range" min="0.0" max="1.0" step="0.1" value={energy} onChange={(e) => setEnergy(e.target.value)} />
-  
-          <label> Tempo (BPM): </label>
-          <input type="range" min="60" max="200" step="1" value={tempo} onChange={(e) => setTempo(e.target.value)} />
-  
-          <label> Valence (0.0 - 1.0): </label>
-          <input type="range" min="0.0" max="1.0" step="0.1" value={valence} onChange={(e) => setValence(e.target.value)} />
-  
-        <button type="submit">Search</button>
+          <div className="mb-3">
+            <br />
+            <br />
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search for a song..."
+              required
+            />
+            </div>
+          <div className="slider-container">
+            <label><strong>Danceability</strong> (0.0 - 1.0): </label>
+            <input type="range" min="0.0" max="1.0" step="0.01" value={danceability} onChange={(e) => setDanceability(e.target.value)} />
+    
+            <label><strong>Energy</strong> (0.0 - 1.0): </label>
+            <input type="range" min="0.0" max="1.0" step="0.01" value={energy} onChange={(e) => setEnergy(e.target.value)} />
+    
+            <label><strong>Tempo</strong> (BPM): </label>
+            <input type="range" min="60" max="200" step="1" value={tempo} onChange={(e) => setTempo(e.target.value)} />
+    
+            <label><strong>Valence</strong> (0.0 - 1.0): </label>
+            <input type="range" min="0.0" max="1.0" step="0.01" value={valence} onChange={(e) => setValence(e.target.value)} />
+          </div>
+
+          <button type="submit" disabled={loading}>
+            {loading ? 'Searching...': 'Search'}
+          </button>
         </form>
 
-        {loading && <p>Loading...</p>}
         {error && <p style={{ color: 'red' }}>{error}</p>}
   
         {/* Recommendation Results */}
         {recommendations.length > 0 && (
-          <div>
+          <div className="results-container">
             <h1>Search Results</h1>
             <p><strong>Song:</strong> {track.name}</p>
             <p><strong>Artist:</strong> {track.artist}</p>

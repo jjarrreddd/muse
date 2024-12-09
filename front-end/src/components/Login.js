@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './style.css';
 
 const LoginPage = () => {
@@ -8,9 +8,8 @@ const LoginPage = () => {
 
     return (
         <div className="App">
-            <header className="App-header" style={{ backgroundColor: 'black', color: 'white' }}>
+            <header className="App-header">
                 <h1 style={{ fontSize: '4rem' }}>Muse</h1>
-
                 <button onClick={login}>Log in with Spotify</button>
             </header>
         </div>
