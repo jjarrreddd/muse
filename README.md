@@ -1,6 +1,6 @@
 Ensure Flask ('pip install Flask' in venv and flask-server directory) and React are installed as well as:
 - axios (npm install axios), framer-motion (npm install framer-motion), react-router-dom (npm install react-router-dom), and bootstrap (npm install bootstrap) in 'front-end' directory.
-- python-dotenv, requests, spotipy (pip install python-dotenv requests spotipy) in venv in 'flask-server' directory.
+- python-dotenv, requests, spotipy, flask-cors (pip install python-dotenv requests spotipy flask-cors) in venv in 'flask-server' directory.
 
 To run the full applicatiom, first split terminals:
 
