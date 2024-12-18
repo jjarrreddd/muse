@@ -5,10 +5,12 @@ import { useNavigate } from "react-router-dom";
 const LogoutButton = () => {
     const navigate = useNavigate();
     const [errorMessage, setErrorMessage] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const handleLogout = async () => {
+        setLoading(true);
         try {
-            const response = await axios.post('http://localhost:3000/logout', {}, { withCredentials: true });
+            const response = await axios.get('http://localhost:3000/logout', {}, { withCredentials: true });
             if (response.status === 200) {
                 setErrorMessage(null);
                 navigate('/');
@@ -23,12 +25,16 @@ const LogoutButton = () => {
             } else {
                 setErrorMessage("An error has occurred. Please try again.");
             }
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <div>
-            <button onClick={handleLogout}>Logout</button>
+        <div class="logout-btn">
+            <button onClick={handleLogout}>
+                {loading ? "Logging Out...": "Log Out"}
+            </button>
             {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
         </div>
     );

@@ -1,67 +1,78 @@
-// npm install react-router-dom -S
-
-import { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './App.css';
-import LoginPage from './components/Login'
+
+import LoginPage from './components/Login';
 import Welcome from './components/Welcome';
+import NavBar from './components/navbar';
+import About from './components/About';
+import Contact from './components/Contact'
+import MusicPlayer from './components/MusicPlayer';
 
 function App() {
-  // const [songInput, setSongInput] = useState(''); // State for the song input
-  // const [recommendations, setRecommendations] = useState([]); // State for song recommendations
-
-  // function getData() {
-  //   window.location.href = "http://localhost:5000/login";
-  // }
-
-  // function getRecommendations() {
-  //   axios({
-  //     method: "POST",
-  //     url: "/recommendations", // Create a new endpoint to handle recommendations
-  //     data: { song: songInput },
-  //   })
-  //   .then((response) => {
-  //     setRecommendations(response.data); // Assuming response contains recommendation data
-  //   }).catch((error) => {
-  //     console.log("Error fetching recommendations", error);
-  //   });
-  // }
-
   return (
     <>
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<LoginPage />} />
-          <Route path="/welcome" element={<Welcome />} />
-        </Routes>
+        <NavBar />
+          <AnimatePresence>
+            <Routes>
+              <Route path="/" element={
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  >
+                    <LoginPage />
+                  </motion.div>
+              }
+              />
+              <Route path="/welcome" element={
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  >
+                    <Welcome />
+                  </motion.div>
+              } />
+              <Route path="/about" element={
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  >
+                    <About />
+                  </motion.div>
+              } />
+              <Route path="/contact" element={
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  >
+                    <Contact />
+                  </motion.div>
+              } />
+              <Route path="/music-player" element={
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  >
+                    <MusicPlayer />
+                  </motion.div>
+              } />
+            </Routes>
+          </AnimatePresence>
       </BrowserRouter>
     </>
-    // <div className="App">
-    //   <header className="App-header" style={{ backgroundColor: 'black', color: 'white'}}>
-    //     <h1 style={{fontSize: '4rem'}}>Muse</h1>
-        
-    //     <button onClick={getData}>Log into Spotify</button>
-        
-    //     <input 
-    //       type="text" 
-    //       placeholder="Enter a song" 
-    //       value={songInput} 
-    //       onChange={(e) => setSongInput(e.target.value)} 
-    //     />
-    //     <button onClick={getRecommendations}>Get Recommendations</button>
-
-    //     {recommendations.length > 0 && (
-    //       <div>
-    //         <h2>Recommendations:</h2>
-    //         <ul>
-    //           {recommendations.map((song, index) => (
-    //             <li key={index}>{song.name}</li> // Adjust based on response structure
-    //           ))}
-    //         </ul>
-    //       </div>
-    //     )}
-    //   </header>
-    // </div>
   );
 }
 
